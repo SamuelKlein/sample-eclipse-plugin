@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: product Core Plugin
+Bundle-SymbolicName: product.core;singleton:=true
+Bundle-Version: 1.0.0
+Bundle-Activator: com.espressif.sample.product.core.Activator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ com.google.gson;bundle-version="2.8.2"
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-11

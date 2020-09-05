@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.commands">
+      <category
+            name="Category Product"
+            id="com.espressif.sample.product.command.product">
+      </category>
+      <command
+            categoryId="com.espressif.sample.product.core.ui.category.product"
+            name="New Product"
+            id="com.espressif.sample.product.command.newproduct">
+      </command>
+      <command
+            categoryId="com.espressif.sample.product.core.ui.category.product"
+            name="Search Product"
+            id="com.espressif.sample.product.command.searchproduct">
+      </command>
+   </extension>
+
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="com.espressif.sample.product.core.ui.handler.NewProductHandler"
+            commandId="com.espressif.sample.product.command.newproduct">
+      </handler>
+      <handler
+            class="com.espressif.sample.product.core.ui.handler.SearchProductHandler"
+            commandId="com.espressif.sample.product.command.searchproduct">
+      </handler>
+      
+   </extension>
+
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="menu:org.eclipse.ui.main.menu?after=additions">
+         <menu
+               id="com.espressif.sample.product.core.ui.category.product"
+               label="Products Espressif"
+               mnemonic="M">
+            <command
+                  commandId="com.espressif.sample.product.command.newproduct"
+                  id="com.espressif.sample.product.core.ui.handler.newproduct"
+                  mnemonic="S">
+            </command>
+            <command
+                  commandId="com.espressif.sample.product.command.searchproduct"
+                  id="com.espressif.sample.product.core.ui.handler.searchproduct"
+                  mnemonic="S">
+            </command>
+         </menu>
+         
+      </menuContribution>
+      <!--
+      <menuContribution
+            locationURI="toolbar:org.eclipse.ui.main.toolbar?after=additions">
+         <toolbar
+               id="com.espressif.sample.product.core.ui.toolbar.product">
+           <command
+                  id="com.espressif.sample.product.core.ui.handler.newproduct"
+                  commandId="pluginsProductEspressif.commands.newproduct"
+                  icon="icons/sample.png"
+                  tooltip="Say hello world">
+            </command>
+            <command
+                  id="com.espressif.sample.product.core.ui.handler.searchproduct"
+                  commandId="com.espressif.sample.product.core.ui.handler.searchproduct"
+                  icon="icons/sample.png"
+                  tooltip="Say hello world">
+            </command>
+         </toolbar>
+      </menuContribution> 
+      -->
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            id="pluginsProductEspressif"
+            name="View Search Product">
+      </category>
+      <view
+            category="pluginsProductEspressif"
+            class="com.espressif.sample.product.core.ui.view.ViewSeachProduct"
+            icon="icons/sample.png"
+            id="com.espressif.sample.product.core.ui.view.ViewSeachProduct"
+            inject="true"
+            name="View Search Product">
+      </view>
+   </extension>
+
+</plugin>
