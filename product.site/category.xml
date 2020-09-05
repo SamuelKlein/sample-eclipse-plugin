@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/product.feature_0.0.0.jar" id="product.feature" version="0.0.0">
+    <category name="product"/>
+   </feature>
+   <feature url="features/product.feature.source_0.0.0.jar" id="product.feature.source" version="0.0.0">
+    <category name="product Developer Resources"/>
+   </feature>
+</site>
