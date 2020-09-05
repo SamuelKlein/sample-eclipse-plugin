@@ -32,6 +32,9 @@ public class ViewSeachProduct extends ViewPart {
 	
 	private String description;
 
+	private Text txtDescription;
+
+
 	public ViewSeachProduct() {
 		workbench = PlatformUI.getWorkbench();
 		viewSeachProduct = this;
@@ -48,7 +51,7 @@ public class ViewSeachProduct extends ViewPart {
 		containerSeach.setLayout(new GridLayout(3, false));
 		var lblSearch = new Label(containerSeach, SWT.NONE);
 		lblSearch.setText("Search:");
-		var txtDescription = new Text(containerSeach, SWT.BORDER);
+		txtDescription = new Text(containerSeach, SWT.BORDER);
 		var dataDescription = new GridData();
 		dataDescription.widthHint = 200;
 		txtDescription.setLayoutData(dataDescription);
@@ -80,8 +83,7 @@ public class ViewSeachProduct extends ViewPart {
 
 	@Override
 	public void setFocus() {
-		// TODO Auto-generated method stub
-
+		txtDescription.setFocus();
 	}
 	
 	public static void refresh() {
