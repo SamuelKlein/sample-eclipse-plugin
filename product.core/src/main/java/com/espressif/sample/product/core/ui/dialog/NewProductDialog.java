@@ -1,5 +1,7 @@
 package com.espressif.sample.product.core.ui.dialog;
 
+import java.util.Optional;
+
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
@@ -15,6 +17,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
 import com.espressif.sample.product.core.data.ProductDAO;
+import com.espressif.sample.product.core.data.ProductValidation;
 import com.espressif.sample.product.core.data.model.ProductDTO;
 import com.espressif.sample.product.core.data.model.TypeProduct;
 
@@ -25,10 +28,12 @@ public class NewProductDialog extends TitleAreaDialog {
 	private Combo type;
 
 	private ProductDTO productDTO;
+	private ProductValidation productValidation;
 
 	public NewProductDialog(Shell parentShell) {
 		super(parentShell);
 		productDTO = new ProductDTO();
+		productValidation = new ProductValidation();
 	}
 
 	@Override
@@ -36,6 +41,7 @@ public class NewProductDialog extends TitleAreaDialog {
 		super.create();
 		setTitle("New Product");
 		setMessage("Create new product for Espressif", IMessageProvider.INFORMATION);
+		getButton(IDialogConstants.OK_ID).setEnabled(false);
 	}
 
 	@Override
@@ -49,7 +55,6 @@ public class NewProductDialog extends TitleAreaDialog {
 		createName(container);
 		createType(container);
 		createDescription(container);
-
 		return area;
 	}
 
@@ -60,6 +65,18 @@ public class NewProductDialog extends TitleAreaDialog {
 		type = new Combo(container, SWT.NONE);
 		String[] items = new String[] { "DevKit", "Soc's", "Module" };
 		type.setItems(items);
+		type.addListener(SWT.KeyUp | SWT.MouseUp, (ev) -> {
+			listener();
+		});
+		type.addVerifyListener((event) -> {
+			listener();
+			var valid = new ProductValidation();
+			var typeproduct = Optional.of(type.getSelectionIndex()).map((in) -> in >= 0 ? in : null)
+					.map((in) -> TypeProduct.values()[in]).orElse(null);
+
+			valid.validType(typeproduct);
+			sendError(valid);
+		});
 	}
 
 	private void createName(Composite container) {
@@ -72,6 +89,15 @@ public class NewProductDialog extends TitleAreaDialog {
 
 		name = new Text(container, SWT.BORDER);
 		name.setLayoutData(dataName);
+		name.addListener(SWT.KeyUp | SWT.MouseUp, (ev) -> {
+			listener();
+		});
+		name.addVerifyListener((event) -> {
+			listener();
+			var valid = new ProductValidation();
+			valid.validName(name.getText());
+			sendError(valid);
+		});
 	}
 
 	private void createDescription(Composite container) {
@@ -91,6 +117,15 @@ public class NewProductDialog extends TitleAreaDialog {
 		dataDescription.widthHint = 200;
 		description = new Text(container, SWT.MULTI | SWT.BORDER | SWT.WRAP | SWT.V_SCROLL);
 		description.setLayoutData(dataDescription);
+		description.addListener(SWT.KeyUp | SWT.MouseUp, (ev) -> {
+			listener();
+		});
+		description.addVerifyListener((event) -> {
+			listener();
+			var valid = new ProductValidation();
+			valid.validDescription(description.getText());
+			sendError(valid);
+		});
 	}
 
 	@Override
@@ -109,17 +144,45 @@ public class NewProductDialog extends TitleAreaDialog {
 		return true;
 	}
 
-	private void saveInput() {
+	private boolean saveInput() {
 		productDTO.setDescription(description.getText());
 		productDTO.setName(name.getText());
-		productDTO.setType(TypeProduct.values()[type.getSelectionIndex()]);
-		ProductDAO.getInstance().save(productDTO);
+		if (type.getSelectionIndex() >= 0) {
+			productDTO.setType(TypeProduct.values()[type.getSelectionIndex()]);
+		}
+		if (productValidation.valid(productDTO)) {
+			ProductDAO.getInstance().save(productDTO);
+			return true;
+		} else {
+			sendError(productValidation);
+		}
+		
+		return false;
+	}
+
+	public void listener() {
+		productDTO.setType(null);
+		productDTO.setDescription(description.getText());
+		productDTO.setName(name.getText());
+		if (type.getSelectionIndex() >= 0) {
+			productDTO.setType(TypeProduct.values()[type.getSelectionIndex()]);
+		}
+		getButton(IDialogConstants.OK_ID).setEnabled(productValidation.valid(productDTO));
+	}
+
+	private void sendError(ProductValidation productValidation) {
+		if (productValidation.getMsg() != null) {
+			setMessage(productValidation.getMsg(), IMessageProvider.ERROR);
+		} else {
+			setMessage("Create new product for Espressif", IMessageProvider.INFORMATION);
+		}
 	}
 
 	@Override
 	protected void okPressed() {
-		saveInput();
-		super.okPressed();
+		if(saveInput()) {
+			super.okPressed();
+		}
 	}
 
 }

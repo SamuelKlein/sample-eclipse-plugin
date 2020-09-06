@@ -1,9 +1,7 @@
 package com.espressif.sample.product.core.data;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -11,7 +9,6 @@ import java.util.stream.Collectors;
 import com.espressif.sample.product.core.Activator;
 import com.espressif.sample.product.core.data.model.ProductDTO;
 import com.espressif.sample.product.core.data.model.Products;
-import com.espressif.sample.product.core.ui.view.ViewSeachProduct;
 import com.google.gson.Gson;
 
 public class ProductDAO {
@@ -80,7 +77,7 @@ public class ProductDAO {
 		try (var out = new FileOutputStream(file)) {
 			var gson = new Gson();
 			out.write(gson.toJson(products).getBytes());
-			ViewSeachProduct.refresh();
+			ProductEvent.getInstance().callUpdate(products);
 		} catch (Exception e) {
 			throw new DataException(e, "Error Product Send to File");
 		}

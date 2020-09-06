@@ -18,6 +18,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
 import com.espressif.sample.product.core.data.ProductDAO;
+import com.espressif.sample.product.core.data.ProductEvent;
 import com.espressif.sample.product.core.data.model.ProductDTO;
 
 public class ViewSeachProduct extends ViewPart {
@@ -38,6 +39,10 @@ public class ViewSeachProduct extends ViewPart {
 	public ViewSeachProduct() {
 		workbench = PlatformUI.getWorkbench();
 		viewSeachProduct = this;
+		ProductEvent.getInstance().listeningUpdate((p) -> {
+			refresh();
+			return p;
+		});
 	}
 
 	@Override
@@ -86,11 +91,9 @@ public class ViewSeachProduct extends ViewPart {
 		txtDescription.setFocus();
 	}
 	
-	public static void refresh() {
-		if (viewSeachProduct != null) {
-			var list = ProductDAO.getInstance().listFindByDescOrName(viewSeachProduct.description);
-			viewSeachProduct.updateTable(list);
-		}
+	private void refresh() {
+		var list = ProductDAO.getInstance().listFindByDescOrName(description);
+		updateTable(list);
 	}
 
 	private void updateTable(List<ProductDTO> list) {
