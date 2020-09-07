@@ -12,7 +12,10 @@
 	<packaging>eclipse-test-plugin</packaging>
 	<name>product :: test</name>
 	<description>product Test Plugin</description>
-
+	<properties>
+		<maven.compiler.target>11</maven.compiler.target>
+	    <maven.compiler.source>11</maven.compiler.source>
+	</properties>
 	<build>
 		<plugins>
 			<plugin>
