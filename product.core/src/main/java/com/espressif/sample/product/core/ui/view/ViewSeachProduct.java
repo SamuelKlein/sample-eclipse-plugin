@@ -70,7 +70,7 @@ public class ViewSeachProduct extends ViewPart {
 	    	refresh();
 	    });
 		
-		table = new Table(container, SWT.BORDER);
+		table = new Table(container, SWT.BORDER | SWT.VIRTUAL);
 		table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		table.setLinesVisible(true);
 		table.setHeaderVisible(true);
@@ -97,7 +97,7 @@ public class ViewSeachProduct extends ViewPart {
 	}
 
 	private void updateTable(List<ProductDTO> list) {
-		table.clearAll();
+		table.removeAll();
 		for (var item : list) {
 			var tableItem = new TableItem(table, SWT.BORDER);
 			tableItem.setText(0, item.getName());
