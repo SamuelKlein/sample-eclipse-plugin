@@ -1,21 +1,24 @@
 package com.espressif.sample.product.core.ui.dialog;
 
+import java.io.File;
 import java.util.Optional;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
+import org.eclipse.nebula.widgets.tablecombo.TableCombo;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 
+import com.espressif.sample.product.core.Activator;
 import com.espressif.sample.product.core.data.ProductDAO;
 import com.espressif.sample.product.core.data.ProductValidation;
 import com.espressif.sample.product.core.data.model.ProductDTO;
@@ -25,7 +28,7 @@ public class NewProductDialog extends TitleAreaDialog {
 
 	private Text name;
 	private Text description;
-	private Combo type;
+	private TableCombo type;
 
 	private ProductDTO productDTO;
 	private ProductValidation productValidation;
@@ -62,9 +65,16 @@ public class NewProductDialog extends TitleAreaDialog {
 		var lbtName = new Label(container, SWT.NONE);
 		lbtName.setText("Type: ");
 
-		type = new Combo(container, SWT.NONE);
+		type = new TableCombo(container, SWT.BORDER | SWT.READ_ONLY);
 		String[] items = new String[] { "DevKit", "Soc's", "Module" };
-		type.setItems(items);
+		String[] itemsImg = new String[] { "devkit.png", "socs.png", "module.png" };
+
+		for (int i = 0; i < items.length; i++) {
+			var ti = new TableItem(type.getTable(), SWT.NONE);
+			ti.setText(items[i]);
+			var id = Activator.getImageDescriptor("icons/" + itemsImg[i]);
+			ti.setImage(id.createImage());
+		}
 		type.addListener(SWT.KeyUp | SWT.MouseUp, (ev) -> {
 			listener();
 		});
@@ -156,7 +166,7 @@ public class NewProductDialog extends TitleAreaDialog {
 		} else {
 			sendError(productValidation);
 		}
-		
+
 		return false;
 	}
 
@@ -180,7 +190,7 @@ public class NewProductDialog extends TitleAreaDialog {
 
 	@Override
 	protected void okPressed() {
-		if(saveInput()) {
+		if (saveInput()) {
 			super.okPressed();
 		}
 	}
